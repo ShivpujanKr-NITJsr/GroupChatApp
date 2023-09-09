@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>SignUp</title>
+</head>
+<body>
+
+    <div class="container" style="display: flex; justify-content: center; padding-top: 50px;">
+        <div style="border: solid red; border-radius: 10px; padding: 100px;" id="paren">
+            
+            <!-- action="user/login" -->
+            <form id='form' onsubmit="return checking(event)" method="post"  >          
+                <div>
+                    <label for="name">Enter your name: </label><br>
+                    <input type="text" name="username" id="username" >
+                    <p class="error username-err"></p>
+                </div>
+                <div>
+                    <label for="email">Enter your email: </label><br>
+                    <input type="text" name="email" id="email">
+                    <p class="error email-err"></p>
+                </div>
+                <div>
+                    <label for="password">Password: </label><br>
+                    <input type="password" name="password" id="password">
+                    <p class="error password-err"></p>
+                </div>
+
+                <div style="padding-top: 15px;">
+                    <button type="submit">Submit</button>
+                </div>
+
+            </form>
+
+            <div style="padding-top: 10px;" id="'loginlink"><a href="#">Existing User-Login</a></div>
+            <div style="color:red;" id="error-msg"></div>
+        </div>
+    </div>
+
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
