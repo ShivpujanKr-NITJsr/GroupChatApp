@@ -66,3 +66,12 @@ exports.personalMsg=(req,res,next)=>{
             res.status(500).json({message:'something went wrong',success:false})
         })
 }
+
+exports.allChat=(req,res,next)=>{
+    personalMsg.findAll()
+        .then(result=>{
+            res.json(result)
+        }).catch(err=>{
+            console.log(err)
+        })
+}
