@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <style>
+        footer {
+            position: sticky;
+            margin-bottom: 10px;
+        }
+
+        #bt {
+            border-radius: 4px solid red;
+            text-align: center;
+
+        }
+
+        /* .pos{
+            position: ;
+            margin-bottom: 2px;
+        } */
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height:100vh
+        }
+
+        .chatting{
+            flex-grow:1;
+        }
+    </style>
+    <title>ChatApp</title>
+</head>
+
+<body>
+    <h2 style="width:200px;margin: auto;">Chat App</h2>
+
+    <div class="container chatting" style="width: 800px; border: 5px solid aqua; ">
+
+    </div>
+
+
+
+
+    <footer class="foo">
+        <div class="container-fluid pos d-flex align-items-center justify-content-center "
+            style="background-color: rgba(2, 64, 99, 0.756);border-top-right-radius: 10px;border-top-left-radius: 10px;height:40px;">
+            <div class="container bg-body-secondary rounded-2"
+                style="height:35px;display: flex;flex-direction: row;width: 670px;">
+                <div class="chat d-flex align-items-center justify-content-center" style="width:600px;">
+                    <input type="text" style="width:600px">
+                </div>
+                <div class="btn" id="bt">Send</div>
+            </div>
+        </div>
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>
