@@ -1,54 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <title>SignUp</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <style>
+      .sty{
+        background-image: url('img/backgr.jpg'); /* Replace with the path to your image */
+        background-size: cover;
+        background-repeat: no-repeat;
+        /* background-position: center; */
+        /* min-height: 100vh; */
+        min-width: 50vw;
+      }
+    </style>
+  <title>SignUp</title>
 </head>
+
 <body>
 
-    <div class="container" style="display: flex; justify-content: center; padding-top: 50px;">
-        <div style="border: solid red; border-radius: 10px; padding: 100px;" id="paren">
-            
-            <!-- action="user/login" -->
-            <form id='form' onsubmit="return checking(event)" method="post"  >          
-                <div>
-                    <label for="name">Enter your name: </label><br>
-                    <input type="text" name="username" id="username" >
-                    <p class="error username-err"></p>
-                </div>
-                <div>
-                    <label for="email">Enter your email: </label><br>
-                    <input type="text" name="email" id="email">
-                    <p class="error email-err"></p>
-                </div>
-                <div>
-                    <label for="email">Enter your Phone no.: </label><br>
-                    <input type="number" name="phone" id="phone">
-                    <p class="error phone-err"></p>
-                </div>
-                <div>
-                    <label for="password">Password: </label><br>
-                    <input type="password" name="password" id="password">
-                    <p class="error password-err"></p>
-                </div>
+  <div class="container" style="display: flex; justify-content: center; padding-top: 50px;">
+    <div style="border: solid red; border-radius: 10px; padding: 100px;" id="paren">
 
-                <div style="padding-top: 15px;">
-                    <button type="submit">Submit</button>
-                </div>
 
-            </form>
+      <form id='form' onsubmit="return checking(event)" method="post">
+        <div>
+          <label for="username">Enter your name: </label><br>
+          <input type="text" name="username" id="username" required>
 
-            <div style="padding-top: 10px;" id="'loginlink"><a href="#">Existing User-Login</a></div>
-            <div style="color:red;" id="error-msg"></div>
         </div>
+        <div>
+          <label for="email">Enter your email: </label><br>
+          <input type="email" name="email" id="email" required>
+
+        </div>
+        <div>
+          <label for="phone">Enter Phone no.: </label><br>
+          <input type="tel" name="phone" id="phone" required>
+          <p class="error phone-err" style="display: none;"></p>
+        </div>
+        <div>
+          <label for="password">Password:</label><br>
+          <input type="password" name="password" id="password" required>
+        </div>
+
+        <div style="padding-top: 15px;">
+          <button type="submit">SignUp</button>
+        </div>
+
+      </form>
+
+      <div style="padding-top: 10px;" id="'loginlink"><a href="#">Existing User-Login</a></div>
+      <div style="color:red;" id="error-msg"></div>
     </div>
-
     
+    <div class="sty d-none d-md-block"></div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  </div>
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous">
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+  <script src="index.js"></script>
+  
 </body>
+
 </html>
