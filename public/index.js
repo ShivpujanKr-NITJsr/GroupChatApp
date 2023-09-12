@@ -28,7 +28,11 @@ function checking(event){
                 if(res.data.msg==='ok'){
                     alert('"Successfuly signed up"')
                     document.getElementById('form').reset()
-               
+                    const form=document.getElementById('form');
+                    form.action='./login.html';
+                    form.method='get'
+                    form.submit()
+
                     return true;
 
                 }else{
