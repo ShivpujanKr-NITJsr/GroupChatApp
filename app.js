@@ -7,7 +7,7 @@ const path =require('path')
 
 require('dotenv').config();
 
-const User=require('./Models/models')
+const {User,personalMsg}=require('./Models/models')
 
 const sequelize=require('./Utils/databasecon')
 
@@ -15,6 +15,9 @@ const route=require('./Routes/routes')
 
 const cors=require('cors')
 
+User.hasMany(personalMsg)
+
+personalMsg.belongsTo(User)
 
 
 sequelize.sync({alter:true})

@@ -1,4 +1,4 @@
-const User=require('../Models/models')
+const {User,personalMsg}=require('../Models/models')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 
@@ -54,4 +54,15 @@ exports.login=(req,res,next)=>{
                 res.status(404).json({ success: false, message: 'User not found' })
             }
         }).catch(err=>console.log(err))
+}
+
+exports.personalMsg=(req,res,next)=>{
+    const uid=req.iduse
+    personalMsg.create({userId:uid,msg:req.body.chatmsg})
+        .then(result=>{
+            res.status(200).json({message:'chat is in now database',success:true})
+        }).catch(err=>{
+            console.log(err)
+            res.status(500).json({message:'something went wrong',success:false})
+        })
 }
