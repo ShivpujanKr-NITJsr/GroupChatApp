@@ -41,7 +41,7 @@ const getAllChat=()=>{
             parent.innerHTML=''
             for(let i=0;i<res.data.length;i++){
                 const p=document.createElement('p');
-                p.textContent=res.data[i].msg;
+                p.textContent=res.data[i].userId+' : '+res.data[i].msg;
                 parent.appendChild(p)
 
             }
@@ -50,3 +50,7 @@ const getAllChat=()=>{
         })
 }
 document.addEventListener('DOMContentLoaded',getAllChat);
+
+setTimeInterval(()=>{
+    getAllChat()
+},1000)
