@@ -1,7 +1,7 @@
 const {User,personalMsg}=require('../Models/models')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
-
+const Sequelize = require('sequelize');
 exports.signUp=(req,res,next)=>{
     // console.log(req.body);
     const name=req.body.name;
@@ -68,7 +68,11 @@ exports.personalMsg=(req,res,next)=>{
 }
 
 exports.allChat=(req,res,next)=>{
-    personalMsg.findAll()
+
+    const lid=req.params.lid;
+    personalMsg.findAll({where:{id: {
+        [Sequelize.Op.gt]:lid,
+      }}})
         .then(result=>{
             res.json(result)
         }).catch(err=>{

@@ -23,34 +23,55 @@ document.getElementById('bt').addEventListener('click',(event)=>{
             }
 
             document.getElementById('chats').value=''
-            getAllChat();
+            getAllWithLs();
         }).catch(err=>{
             console.log(err)
         })
 })
 
 
+const getAllWithLs=()=>{
+    let chats=JSON.parse(localStorage.getItem('chatmsg'))
 
-const getAllChat=()=>{
-
-    const purl=url+'/user/allchat';
     
-    axios.get(purl)
-        .then(res=>{
-            const parent=document.getElementById('chatting');
-            parent.innerHTML=''
-            for(let i=0;i<res.data.length;i++){
-                const p=document.createElement('p');
-                p.textContent=res.data[i].userId+' : '+res.data[i].msg;
-                parent.appendChild(p)
+    if(chats){
+        const lid=chats[chats.length-1].id;
 
-            }
-        }).catch(err=>{
-            console.log(err)
-        })
+        const purl=url+`/user/allchat/${lid}`
+        axios.get(purl)
+            .then(res=>{
+                chats=chats.concat(res.data)
+                localStorage.setItem('chatmsg',JSON.stringify(chats))
+                show(chats)
+            }).catch(err=>{
+                console.log(err)
+            })
+    }else{
+        const purl=url+`/user/allchat/0`
+        axios.get(purl)
+            .then(res=>{
+                chats=res.data
+                localStorage.setItem('chatmsg',JSON.stringify(chats))
+                show(chats)
+            }).catch(err=>{
+                console.log(err)
+            })
+    }
 }
-document.addEventListener('DOMContentLoaded',getAllChat);
+
+function show(data){
+    const parent=document.getElementById('chatting');
+    parent.innerHTML=''
+    for(let i=0;i<data.length;i++){
+        const p=document.createElement('p');
+        p.textContent=data[i].userId+' : '+data[i].msg;
+        parent.appendChild(p)
+
+    }
+}
+
+document.addEventListener('DOMContentLoaded',getAllWithLs);
 
 setTimeInterval(()=>{
-    getAllChat()
+    getAllWithLs()
 },1000)
