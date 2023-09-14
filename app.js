@@ -7,7 +7,7 @@ const path =require('path')
 
 require('dotenv').config();
 
-const {User,personalMsg}=require('./Models/models')
+const {User,personalMsg,Group}=require('./Models/models')
 
 const sequelize=require('./Utils/databasecon')
 
@@ -19,8 +19,18 @@ User.hasMany(personalMsg)
 
 personalMsg.belongsTo(User)
 
+// User.hasMany(Group,{foreignKey:'creator'});
+// Group.belongsTo(User,{foreignKey:'creator'});
+
+User.belongsToMany(Group,{through:'usergroup'})
+Group.belongsToMany(User,{through:'usergroup'}) 
+
+Group.hasMany(personalMsg);
+personalMsg.belongsTo(Group)
+
 
 sequelize.sync({alter:true})
+// sequelize.drop({force:true})
 
 const app=express();
 
@@ -32,6 +42,7 @@ app.use(express.json())
 //     origin:'http://127.0.0.1:5500',
 //     methods:['put','get','delete','post']
 // }))
+app.use(cors())
 
 app.use('/',route)
 

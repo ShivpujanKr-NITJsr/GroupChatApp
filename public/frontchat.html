@@ -9,28 +9,88 @@
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
     <style>
+        
         footer {
             position: sticky;
             margin-bottom: 10px;
         }
+
+
         body {
             display: flex;
             flex-direction: column;
-            height:100vh
+            height: 100vh;
+            /* margin:0px;
+            padding:0px; */
+            background-color: black;
         }
 
-        .chatting{
-            flex-grow:1;
+        /* html{
+            margin:0px;
+            padding:0px;
+        } */
+
+        .chatting {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            height:80vh
+        }
+        .chatting p{
+            color:white;
+        }
+        .chatting p{
+            word-wrap: break-word;
+        }
+        .groupinput{
+            display: flex;
+            flex-direction: row;
+        }
+        #groupname{
+            word-wrap:break-word;
+        }
+        #groupname:hover{
+            cursor: pointer;
+            background-color: white;
+            color:black
+        }
+        #chattinghead{
+            word-wrap:break-word;
+            
+        }
+        #ro{
+            display:flex;
+            flex-direction: row;
+        }
+        #groupname{
+            height: 75vh;
+            overflow:auto ;
+            
         }
     </style>
     <title>ChatApp</title>
 </head>
 
 <body>
-    <h2 style="width:200px;margin: auto;">Chat App</h2>
+    <h2 style="width:200px;margin: auto;color:white">Chat App</h2>
 
-    <div id="chatting" class="container chatting" style="width: 800px; border: 5px solid aqua; ">
+    <div class="chatting" style="width: 800px; border: 5px solid aqua; margin:auto;border-radius: 5px;">
+        <div id="group" style="width: 200px; border-right: 5px solid rgb(255, 178, 127); ">
+            <div id="grouphead" style="background-color: rgb(134, 134, 162);height:45px;display:flex;justify-content:  end;"> <button id='creategroup' style="border-radius: 22.5px;">Create Group</button></div>
+            <div class="groupinput" id="groupinputs" ><input type="text" style="width:130px;display: none;" id="groupinput" ><button id="creating" style="display: none;">create</button></div>
 
+            <div style="text-align: center;color: blueviolet;">List of group</div>
+            <div id="groupname" style="overflow: auto;"></div>
+        </div>
+
+        <div >
+            <header id="ro"></header>
+            <div id="chatting" style="width:592px ;">
+        
+        
+            </div>
+        </div>
+        
     </div>
 
 
@@ -40,9 +100,9 @@
         <div class="container-fluid pos d-flex align-items-center justify-content-center "
             style="background-color: rgba(2, 64, 99, 0.756);border-top-right-radius: 10px;border-top-left-radius: 10px;height:40px;">
             <div class="container bg-body-secondary rounded-2"
-                style="height:35px;display: flex;flex-direction: row;width: 670px;">
-                <div class="chat d-flex align-items-center justify-content-center" style="width:600px;">
-                    <input type="text" id="chats" style="width:600px" required>
+                style="height:35px;display: flex;flex-direction: row;width: 600px;">
+                <div class="chat d-flex align-items-center justify-content-center" style="width:500px;">
+                    <input type="text" class="col-sm-12" id="chats"  required>
                 </div>
                 <div class="btn" id="bt">Send</div>
             </div>

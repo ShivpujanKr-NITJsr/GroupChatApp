@@ -14,7 +14,7 @@
 
         <div class="container sty" >
 
-            <form id="form" class="form-control" onsubmit="check(event)" style="background-image: url('./img/backgr.jpg'); width:500px; margin:auto; ">
+            <form id="form" class="form-control" onsubmit="check(event)" style=" width:500px; margin:auto; ">
 
                 <div style="display: flex; flex-direction: column;">
                     <label for="email">Enter Your Email:</label>
@@ -26,9 +26,9 @@
                 </div>
 
                 <button class="btn btn-outline-success mt-4" type="submit">Login</button>
-                <p style="margin-top: 30px;">New User? <a href="./index.html">Please SignUp</a></p>
+                <!-- <p style="margin-top: 30px;">New User? <a href="./index.html">Please SignUp</a></p> -->
             </form>
-
+            <input id="uuid" type="hidden" name='uuid' value='<%=name%>' >
             
         </div>
 
@@ -43,6 +43,31 @@
   </script>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
-  <script src="login.js"></script>
+  <script >
+
+    function check(event){
+        event.preventDefault()
+        const email=document.getElementById('email').value
+        const password=document.getElementById('password').value
+        const uuid=document.getElementById('uuid').value;
+
+        const obj={email,password,uuid}
+        axios.post('http://127.0.0.1:3000/user/group/joining',obj)
+            .then(res=>{
+                alert(res.data.message)
+                if(res.data.success==true){
+                    const form= document.getElementById('form');
+                    localStorage.setItem('token',res.data.token)
+                    form.action='../../../../frontchat.html'
+                    form.submit()
+                }
+                
+            }).catch(err=>{
+                console.log(err);
+                alert('something went wrong')
+            })
+
+    }
+  </script>
 </body>
 </html>

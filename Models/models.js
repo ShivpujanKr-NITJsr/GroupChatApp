@@ -26,4 +26,19 @@ const personalMsg=sequelize.define('personalmsg',{
     msg:Sequelize.STRING
 })
 
-module.exports={User,personalMsg}
+const Group=sequelize.define('group',{
+    id:{
+        type:Sequelize.INTEGER,
+        primaryKey:true,
+        autoIncrement:true,
+        allowNull:false
+    },
+    name:Sequelize.STRING,
+    uuid:{
+        type:Sequelize.STRING
+    }
+})
+
+
+
+module.exports={User,personalMsg,Group}
