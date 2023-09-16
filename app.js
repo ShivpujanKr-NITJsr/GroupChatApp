@@ -7,7 +7,7 @@ const path =require('path')
 
 require('dotenv').config();
 
-const {User,personalMsg,Group}=require('./Models/models')
+const {User,personalMsg,Group,Admin}=require('./Models/models')
 
 const sequelize=require('./Utils/databasecon')
 
@@ -28,6 +28,10 @@ Group.belongsToMany(User,{through:'usergroup'})
 Group.hasMany(personalMsg);
 personalMsg.belongsTo(Group)
 
+User.hasMany(Admin)
+Admin.belongsTo(User)
+Group.hasMany(Admin);
+Admin.belongsTo(Group)
 
 sequelize.sync({alter:true})
 // sequelize.drop({force:true})

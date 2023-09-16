@@ -34,7 +34,13 @@
             flex-grow: 1;
             display: flex;
             flex-direction: row;
-            height:80vh
+            /* min-height:80vh */
+            /* overflow: auto; */
+        }
+        #chatting{
+            /* min-height: 400px; */
+            overflow-y: auto;
+
         }
         .chatting p{
             color:white;
@@ -49,10 +55,25 @@
         #groupname{
             word-wrap:break-word;
         }
-        #groupname:hover{
+        #groupname :hover{
             cursor: pointer;
             background-color: white;
-            color:black
+            color:black;
+            padding-left: 10px;
+            font-weight:bold;
+        }
+        /* #groupname p:hover{
+            cursor: pointer;
+            background-color: black;
+            color: white;
+        } */
+        #sharelink:hover{
+            font-weight:bold;
+            background-color: blueviolet;
+        }
+        #creategroup:hover{
+            font-weight: bold;
+            background-color: blue;
         }
         #chattinghead{
             word-wrap:break-word;
@@ -67,6 +88,30 @@
             overflow:auto ;
             
         }
+        
+        #adminhead{
+            display:flex;
+            flex-direction: row;
+            /* width:100%; */
+        }
+        #listuser{
+            word-wrap: break-word;
+        }
+        .custom-cursor {
+            cursor: pointer;
+        }
+
+        .custom-cursor:hover{
+            background-color: black;
+            padding-left: 15px;
+            color: white;
+            font-weight: bolder;
+        }
+        #adduser:hover{
+            font-weight: bold;
+            background-color: blue;
+        }
+      
     </style>
     <title>ChatApp</title>
 </head>
@@ -74,8 +119,8 @@
 <body>
     <h2 style="width:200px;margin: auto;color:white">Chat App</h2>
 
-    <div class="chatting" style="width: 800px; border: 5px solid aqua; margin:auto;border-radius: 5px;">
-        <div id="group" style="width: 200px; border-right: 5px solid rgb(255, 178, 127); ">
+    <div class="chatting" style="width: 1000px; border: 5px solid aqua; margin:auto;border-radius: 5px;">
+        <div id="group" style="width: 300px; border-right: 5px solid rgb(255, 178, 127);">
             <div id="grouphead" style="background-color: rgb(134, 134, 162);height:45px;display:flex;justify-content:  end;"> <button id='creategroup' style="border-radius: 22.5px;">Create Group</button></div>
             <div class="groupinput" id="groupinputs" ><input type="text" style="width:130px;display: none;" id="groupinput" ><button id="creating" style="display: none;">create</button></div>
 
@@ -84,14 +129,21 @@
         </div>
 
         <div >
-            <header id="ro"></header>
+            <header id="ro" ></header>
             <div id="chatting" style="width:592px ;">
         
         
             </div>
         </div>
+
+        <div id="users" style="width: 300px; border-left: 5px solid rgb(255, 178, 127);">
+            <header id="adminhead" ></header>
+            <div id="listuser" style="overflow: auto;"></div>
+        </div>
         
     </div>
+
+    
 
 
 

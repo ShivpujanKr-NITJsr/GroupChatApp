@@ -54,11 +54,26 @@
         const obj={email,password,uuid}
         axios.post('http://127.0.0.1:3000/user/group/joining',obj)
             .then(res=>{
-                alert(res.data.message)
+                
                 if(res.data.success==true){
+                    alert(res.data.message)
                     const form= document.getElementById('form');
+                    localStorage.clear();
                     localStorage.setItem('token',res.data.token)
                     form.action='../../../../frontchat.html'
+                    form.submit()
+                    
+                }else if(res.data.msg==='try'){
+                    // alert('wrong password')
+                    alert(res.data.message)
+                }
+                
+                else {
+                    alert('create your account first tjen again use this link to join')
+                    const form= document.getElementById('form');
+                    // localStorage.setItem('token',res.data.token)
+                    localStorage.clear();
+                    form.action='../../../../index.html'
                     form.submit()
                 }
                 

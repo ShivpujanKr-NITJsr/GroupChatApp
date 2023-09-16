@@ -13,6 +13,7 @@ function check(event){
     // alert('i am js')
     axios.post(gurl,obj)
         .then(res=>{
+            localStorage.clear()
             localStorage.setItem('token',res.data.token);
             const form=document.getElementById('form');
             form.action='./frontchat.html'
