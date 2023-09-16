@@ -455,13 +455,26 @@ const getAllChats=(group)=>{
         }else{
             // alert("Web Share API is not supported in this browser.");
 
-            try{
-                await navigator.clipboard.writeText(purl);
-                alert('Link copied');
-            }catch(erro){
-                console.log(erro)
-                chats.value=purl;
-                alert('Failed to copy link.link is in chatting input,please manually copy that');
+            // try{
+            //     await navigator.clipboard.writeText(purl);
+            //     alert('Link copied');
+            // }catch(erro){
+            //     console.log(erro)
+            //     chats.value=purl;
+            //     alert('Failed to copy link.link is in chatting input,please manually copy that');
+            // }
+            const tempInput=document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value=link;
+            tempInput.select();
+
+            try {
+                document.execCommand('copy');
+                alert('Link copied to clipboard');
+            }catch(err) {
+                alert('Failed to copy link. Please select the link and press Ctrl+C (Cmd+C on Mac) to copy it manually.');
+            } finally{
+                document.body.removeChild(tempInput);
             }
         }
     })
