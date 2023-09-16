@@ -52,7 +52,7 @@
         const uuid=document.getElementById('uuid').value;
 
         const obj={email,password,uuid}
-        axios.post('http://65.2.75.54:3000/user/group/joining',obj)
+        axios.post('http://127.0.0.1:3000/user/group/joining',obj)
             .then(res=>{
                 
                 if(res.data.success==true){

@@ -1,5 +1,5 @@
 
-const url='http://65.2.75.54:3000'
+const url='http://127.0.0.1:3000'
 
 
 
@@ -23,7 +23,7 @@ function checking(event){
         console.log('i am ')
         const purl=url+'/user/signup'
         console.log(purl)
-        axios.post(`http://65.2.75.54:3000/user/signup`,obj)
+        axios.post(`http://127.0.0.1:3000/user/signup`,obj)
             .then((res)=>{
                 if(res.data.msg==='ok'){
                     alert('"Successfuly signed up"')
