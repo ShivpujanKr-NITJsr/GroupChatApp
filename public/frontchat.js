@@ -465,14 +465,16 @@ const getAllChats=(group)=>{
             // }
             const tempInput=document.createElement('input');
             document.body.appendChild(tempInput);
-            tempInput.value=link;
+            tempInput.value=purl;
             tempInput.select();
 
             try {
                 document.execCommand('copy');
-                alert('Link copied to clipboard');
+                alert('Link copied');
             }catch(err) {
-                alert('Failed to copy link. Please select the link and press Ctrl+C (Cmd+C on Mac) to copy it manually.');
+                document.getElementById('chats').value=purl;
+                alert('Failed to copy link. Please select the link and press Ctrl+C (Cmd+C on Mac) to copy it manually.,link is in chat input');
+
             } finally{
                 document.body.removeChild(tempInput);
             }
