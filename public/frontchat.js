@@ -437,7 +437,7 @@ const getAllChats=(group)=>{
     chathead.style.textAlign='center'
     chathead.innerHTML=`<h3>${group.name}</h3>`;
     const share=document.getElementById('sharelink');
-    share.addEventListener('click',()=>{
+    share.addEventListener('click',async ()=>{
         const uuid=group.uuid;
         const purl=url+`/user/group/share/${uuid}`;
         if (navigator.share) { 
@@ -453,16 +453,16 @@ const getAllChats=(group)=>{
                 console.error("Error sharing link:", error);
             });
         }else{
-            alert("Web Share API is not supported in this browser.");
+            // alert("Web Share API is not supported in this browser.");
 
-            const item=new ClipboardItem({ 'text/plain': new Blob([purl], { type: 'text/plain' }) })
-            navigator.clipboard.write([item])
-                .then(()=>{
-                    alert('link copied successfully')
-                }).catch(err=>{
-                    console.log(err)
-                    alert('Failed to copy lin: '+err)
-                })
+            try{
+                await navigator.clipboard.writeText(purl);
+                alert('Link copied');
+            }catch(erro){
+                console.log(erro)
+                chats.value=purl;
+                alert('Failed to copy link.link is in chatting input,please manually copy that');
+            }
         }
     })
     const purl=url+`/user/group/allchat/${group.id}`
