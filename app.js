@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname,'public')))
 app.use(express.json())
 
 // app.use(cors({
-//     origin:'http://13.127.94.131:5500',
+//     origin:'http://65.2.75.54:5500',
 //     methods:['put','get','delete','post']
 // }))
 // app.use(cors())

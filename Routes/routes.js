@@ -24,7 +24,7 @@ router.post('/user/getallgroup',authorization,controllers.getAllGroup)
 router.post('/user/group/allchat/:id',authorization,controllers.getAllChats)
 
 router.post('/user/personalmessage/:id',authorization,controllers.groupPersonalMsg)
-//http://13.127.94.131:3000/user/group/share/a61fb2f1-1071-406c-a0a9-77440622bc82
+//http://65.2.75.54:3000/user/group/share/a61fb2f1-1071-406c-a0a9-77440622bc82
 router.get('/user/group/share/:uid',controllers.joiningLink)
 
 router.post('/user/group/joining',controllers.joining)

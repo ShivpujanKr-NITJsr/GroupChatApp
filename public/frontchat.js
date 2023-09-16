@@ -1,5 +1,5 @@
 
-const url='http://13.127.94.131:3000'
+const url='http://65.2.75.54:3000'
 document.getElementById('bt').addEventListener('click',(event)=>{
     const chatmsg=document.getElementById('chats').value.trim()
     let grid;

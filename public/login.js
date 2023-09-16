@@ -1,4 +1,4 @@
-const url='http://13.127.94.131:3000'
+const url='http://65.2.75.54:3000'
 
 function check(event){
     event.preventDefault();
