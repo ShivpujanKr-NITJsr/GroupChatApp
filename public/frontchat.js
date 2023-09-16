@@ -454,6 +454,15 @@ const getAllChats=(group)=>{
             });
         }else{
             alert("Web Share API is not supported in this browser.");
+
+            const item=new ClipboardItem({ 'text/plain': new Blob([purl], { type: 'text/plain' }) })
+            navigator.clipboard.write([item])
+                .then(()=>{
+                    alert('link copied successfully')
+                }).catch(err=>{
+                    console.log(err)
+                    alert('Failed to copy lin: '+err)
+                })
         }
     })
     const purl=url+`/user/group/allchat/${group.id}`
