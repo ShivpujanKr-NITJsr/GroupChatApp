@@ -415,7 +415,7 @@ exports.getAllNotUser = async (req, res, next) => {
 
         const author=req.iduse;
         const email=await User.findByPk(author);
-        if(email.email!=='sk1234@gmail.com'){
+        if(email.email!==process.env.username){
             return res.status(404).json({message:'unauthorized access',success:false})
         }
         if (group) {

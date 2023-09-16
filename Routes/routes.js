@@ -11,7 +11,7 @@ router.post('/user/signup',controllers.signUp);
 
 router.post('/user/login',controllers.login)
 
-router.post('/user/personalmessage',authorization,controllers.personalMsg)
+// router.post('/user/personalmessage',authorization,controllers.personalMsg)
 
 // ------------------// router.get('/user/allchat',controllers.allChat)
 
@@ -24,7 +24,7 @@ router.post('/user/getallgroup',authorization,controllers.getAllGroup)
 router.post('/user/group/allchat/:id',authorization,controllers.getAllChats)
 
 router.post('/user/personalmessage/:id',authorization,controllers.groupPersonalMsg)
-//http://127.0.0.1:3000/user/group/share/a61fb2f1-1071-406c-a0a9-77440622bc82
+//http://13.127.94.131:3000/user/group/share/a61fb2f1-1071-406c-a0a9-77440622bc82
 router.get('/user/group/share/:uid',controllers.joiningLink)
 
 router.post('/user/group/joining',controllers.joining)
