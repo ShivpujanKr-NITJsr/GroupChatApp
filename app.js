@@ -13,7 +13,7 @@ const sequelize=require('./Utils/databasecon')
 
 const route=require('./Routes/routes')
 
-const cors=require('cors')
+// const cors=require('cors')
 
 User.hasMany(personalMsg)
 
@@ -46,7 +46,7 @@ app.use(express.json())
 //     origin:'http://127.0.0.1:5500',
 //     methods:['put','get','delete','post']
 // }))
-app.use(cors())
+// app.use(cors())
 
 app.use('/',route)
 

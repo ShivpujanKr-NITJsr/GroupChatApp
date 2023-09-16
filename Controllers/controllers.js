@@ -413,6 +413,11 @@ exports.getAllNotUser = async (req, res, next) => {
     try {
         const group = await Group.findByPk(gid)
 
+        const author=req.iduse;
+        const email=await User.findByPk(author);
+        if(email.email!=='sk1234@gmail.com'){
+            return res.status(404).json({message:'unauthorized access',success:false})
+        }
         if (group) {
             // const users=await User.findAll({
             //     include:{
@@ -488,5 +493,7 @@ exports.directAdd=async (req,res,next)=>{
     }catch(err){
         console.log(err)
     }
+
+    
     
 }

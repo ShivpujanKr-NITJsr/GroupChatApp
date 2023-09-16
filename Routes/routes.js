@@ -38,7 +38,7 @@ router.post('/user/group/makeadmin/:gid',authorization,controllers.makeUserAdmin
 router.post('/user/group/removeadmin/:gid',authorization,controllers.removeUserFromAdmin)
 // router.post('/user/group/:gid',authorization,controllers.)
 
-router.get('/user/allnotuser/:gid',controllers.getAllNotUser)
+router.post('/user/allnotuser/:gid',authorization,controllers.getAllNotUser)
 
 router.post('/user/group/:gid',controllers.directAdd)
 

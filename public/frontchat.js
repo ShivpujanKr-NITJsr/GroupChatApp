@@ -116,7 +116,10 @@ function AddUserInTheGroup(e,group){
     }
     const purl=url+`/user/allnotuser/${group.id}`
 
-    axios.get(purl)
+    const obj={
+        token:localStorage.getItem('token')
+    }
+    axios.post(purl,obj)
         .then(notuser=>{
             createAddModals(e,group,notuser.data)
 
@@ -124,6 +127,8 @@ function AddUserInTheGroup(e,group){
             e.stopPropagation()
         }).catch(err=>{
             console.log(err)
+            alert('something went wrong '+'')
+            alert('superadmin disabled this features for user security, still you can share link')
         })
     
 }
@@ -136,7 +141,7 @@ function addUserIn(group,userobj){
             alert(`${userobj.name} is added to ${group.name}`)
         }).catch(err=>{
             console.log(err)
-            alert('something went wrong')
+            
         })
 }
 
