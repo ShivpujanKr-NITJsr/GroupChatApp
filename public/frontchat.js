@@ -1,10 +1,16 @@
 
 const url='http://127.0.0.1:3000'
+
+const socket=io(url)
+
+
+
 document.getElementById('bt').addEventListener('click',(event)=>{
     const chatmsg=document.getElementById('chats').value.trim()
     let grid;
     if(chatmsg==''){
-        alert('blank there is nothing to sent')
+        // alert('blank there is nothing to sent')
+        document.getElementById('chats').focus()
         
         return;
     }
@@ -21,18 +27,19 @@ document.getElementById('bt').addEventListener('click',(event)=>{
     }
     axios.post(purl,obj)
         .then(res=>{
-            console.log(res);
-            if(res.data.success==true){
-                // alert(res.data.message)
-                console.log('successfully saved in db')
-            }else{
-                // alert(res.data.message)
-                console.log('not saved in db')
-            }
+            // console.log(res);
+            // if(res.data.success==true){
+            //     // alert(res.data.message)
+            //     console.log('successfully saved in db')
+            // }else{
+            //     // alert(res.data.message)
+            //     console.log('not saved in db')
+            // }
 
             document.getElementById('chats').value=''
             // getAllWithLs();
-            getAllChats(JSON.parse(localStorage.getItem('currentG')))
+            socket.emit('usermessaged')
+            // getAllChats(JSON.parse(localStorage.getItem('currentG')))
         }).catch(err=>{
             alert('long text,not supported./internal server error')
             console.log('error',err)
@@ -83,8 +90,6 @@ const getAllGroup=()=>{
                 const child=document.createElement('div');
                 child.style='border:2px solid red;'
                 child.textContent=res.data[i].name;
-
-                
                 if(JSON.stringify(res.data[i])===localStorage.getItem('currentG')){
                     found=true;
 
@@ -98,11 +103,18 @@ const getAllGroup=()=>{
 
             if(!found){
                 const named=JSON.parse(localStorage.getItem('currentG'))
-                alert('Admin removed you from the group :'+named.name)
+                if(named){
+                    
+                    alert('Admin removed you from the group '+named.name)
+
+                }
+                
+                // 
                 localStorage.removeItem('currentG');
                 document.getElementById('ro').innerHTML='';
                 document.getElementById('chatting').innerHTML=''
             }
+            
         }).catch(err=>console.log(err))
 }
 
@@ -134,11 +146,15 @@ function AddUserInTheGroup(e,group){
 }
 
 function addUserIn(group,userobj){
-    console.log(userobj)
+    
     const purl=url+`/user/group/${group.id}`
     axios.post(purl,userobj)
         .then(result=>{
+            socket.emit('superadminadded')
+            getAllAdmin(group)
             alert(`${userobj.name} is added to ${group.name}`)
+            
+            
         }).catch(err=>{
             console.log(err)
             
@@ -215,6 +231,7 @@ function closed(){
 }
 
 const getAllAdmin=(group)=>{
+    
     const head=document.getElementById('adminhead');
     head.innerHTML=`<div style="height: 45px; background-color: rgb(255, 225, 127);overflow: auto;width:140px;" id="adminheader"></div> <button id="adduser" style='width:55px;'>Add</button>`
 
@@ -223,9 +240,15 @@ const getAllAdmin=(group)=>{
     adminheader.style.textAlign='center'
     adminheader.innerHTML=`<b>User of Group</b>`
 
+    
     const adduser=document.getElementById('adduser');
     
-
+    if(!group){
+        head.innerHTML=''
+        adminheader.innerHTML=''
+        document.getElementById('listuser').innerHTML=''
+        return ;
+    }
     
 
     const purl=url+`/user/group/alluser/${group.id}`;
@@ -331,6 +354,7 @@ function createModals(user,e){
 
     remove.addEventListener('click',(even)=>{
         functionalityRMRA(even,user,1)
+        // socket.emit('userremovedfromgroup')
     })
     const makeAdmin=document.createElement('p')
     makeAdmin.textContent='make Admin'
@@ -338,6 +362,7 @@ function createModals(user,e){
     makeAdmin.classList.add('custom-cursor')
     makeAdmin.addEventListener('click',(even)=>{
         functionalityRMRA(even,user,2)
+        // socket.emit('madeadmin');
     })
     const removeAdmin=document.createElement('p')
     removeAdmin.textContent='Remove From Admin'
@@ -345,6 +370,7 @@ function createModals(user,e){
     removeAdmin.classList.add('custom-cursor')
     removeAdmin.addEventListener('click',(even)=>{
         functionalityRMRA(even,user,3)
+        // socket.emit('removedfromadmin')
     })
     contentdiv.appendChild(remove)
     contentdiv.appendChild(makeAdmin)
@@ -398,8 +424,10 @@ function removeUser(obj){
     const purl=url+`/user/group/remove/${obj.gid}`
     axios.post(purl,obj)
         .then(res=>{
+            socket.emit('userremovedfromgroup')
             alert('user removed from group')
-            getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
+
+            // getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
         }).catch(err=>{
             console.log(err)
         })
@@ -409,7 +437,8 @@ function makeAdminUser(obj){
     const purl=url+`/user/group/makeadmin/${obj.gid}`
     axios.post(purl,obj)
         .then(res=>{
-            getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
+            socket.emit('madeadmin');
+            // getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
         }).catch(err=>{
             console.log(err)
         })
@@ -418,7 +447,8 @@ function removeFromAdminUser(obj){
     const purl=url+`/user/group/removeadmin/${obj.gid}`
     axios.post(purl,obj)
         .then(res=>{
-            getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
+            socket.emit('removedfromadmin')
+            // getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
         }).catch(err=>{
             console.log(err)
         })
@@ -436,6 +466,12 @@ const getAllChats=(group)=>{
     chathead.style.color='blue'
     chathead.style.textAlign='center'
     chathead.innerHTML=`<h3>${group.name}</h3>`;
+
+    if(!group){
+        head.innerHTML=''
+        chathead.innerHTML=''
+        return;
+    }
     const share=document.getElementById('sharelink');
     share.addEventListener('click',async ()=>{
         const uuid=group.uuid;
@@ -486,7 +522,31 @@ const getAllChats=(group)=>{
     }
     axios.post(purl,objname)
         .then(res=>{
+            // console.log(res.data.user)
+            // socket.emit('add user',{
+            //     user:res.data.user,
+            //     groupid:group.id
+            // })
+
+            
             show(res.data)
+            // socket.on('user joined',(data)=>{
+            //     console.log(data)
+            //     const p=document.createElement('p');
+            //     // console.log(data[i].user.name, 'You')
+            //     const dip=document.createElement('div')
+            //     // dip.style.width='592px'
+            //     p.style.margin='5px'
+                
+                
+            //     p.classList.add('lefttext')
+            //     p.style.color='black'
+            //     p.textContent=`new user joined`;
+                
+            //     // dip.appendChild(p)
+            //     document.getElementById('chatting').appendChild(p)
+            // })
+
         }).catch(err=>{
             console.log(err)
         })
@@ -495,23 +555,53 @@ const getAllChats=(group)=>{
 function show(data){
 
     // console.log('i am in data show')
-    if(data.length>10){
+    if(data.length>100){
         // let d=[];
         // for(let i=data.length-10;i<data.length;i++){
         //     d.push(data[i]);
         // }
         // data=d;
-        data=data.slice(-10)
+        data=data.slice(-100)
     }
     const parent=document.getElementById('chatting');
     parent.innerHTML=''
+    parent.style.padding='5px'
+    // let chan=true;
     for(let i=0;i<data.length;i++){
         const p=document.createElement('p');
-        // if(data[i].user.name=='You'){
-        //     p
-        // }
-        p.textContent=data[i].user.name+' : '+data[i].msg;
-        parent.appendChild(p)
+        // console.log(data[i].user.name, 'You')
+        const dip=document.createElement('div')
+        // dip.style.width='592px'
+        p.style.margin='5px'
+        
+        if(data[i].user.name.trim()==='You'){
+
+            p.classList.add('righttext')
+            p.style.color='black'
+            p.innerHTML=`${data[i].msg} : <b>${data[i].user.name}</b>`;
+        //    if(i>0){
+        //         if(data[i].user.name.trim()==='You' &&
+        //         data[i-1].user.name.trim()==='You'){
+        //             const br=document.createElement('br')
+        //             parent.appendChild(br)
+        //         }
+        //    }
+
+        }else{
+            p.classList.add('lefttext')
+            p.style.color='black'
+            p.innerHTML=`<b>${data[i].user.name}</b> : ${data[i].msg}`;
+            // if(i>0){
+            //     if(data[i].user.name.trim()===data[i-1].user.name.trim()){
+            //         const br=document.createElement('br')
+            //         parent.appendChild(br)
+            //     }
+            // }
+        }
+        // dip.style.paddingBottom='5px'
+        dip.appendChild(p)
+        parent.appendChild(dip)
+        parent.scrollTop=parent.scrollHeight
 
     }
 }
@@ -531,12 +621,94 @@ document.addEventListener('DOMContentLoaded',()=>{
 }
 );
 
-setInterval( ()=>{
+// const sock = io('http://127.0.0.1:3000');
+
+// Add an event listener for the "new message" event
+
+
+socket.on('connect', () => {
+    console.log('Connected to WebSocket server');
     getAllGroup()
     if(localStorage.getItem('currentG')){
         getAllChats(JSON.parse(localStorage.getItem('currentG')))
     }
-},1000)
+});
+    // Handle user joining the group
+
+// socket.on('connect', () => {
+
+//     socket.emit('userjoined');
+// });
+socket.on('userjoined',()=>{
+    // alert('new user joined in')
+    console.log('userjoined')
+    if(localStorage.getItem('currentG')){
+        const gr=JSON.parse(localStorage.getItem('currentG'))
+        getAllAdmin(gr)
+        
+    }
+})
+socket.on('userremovedfromgroup',async ()=>{
+    getAllGroup()
+    
+    setTimeout(()=>{
+        if(localStorage.getItem('currentG')){
+            getAllChats(JSON.parse(localStorage.getItem('currentG')))
+            // getAllAdmin(JSON.parse(localStorage.getItem('currentG')));
+        } 
+
+        else{
+            getAllChats('')
+            // getAllAdmin('')
+        }
+    },2000)
+    
+    
+})
+socket.on('madeadmin',()=>{
+    if(localStorage.getItem('currentG')){
+
+        getAllAdmin(JSON.parse(localStorage.getItem('currentG')))
+    }
+})
+socket.on('removedfromadmin',()=>{
+    if(localStorage.getItem('currentG')){
+
+        getAllAdmin(JSON.parse(localStorage.getItem('currentG')))
+    }
+})
+socket.on('usermessaged',()=>{
+    if(localStorage.getItem('currentG')){
+        getAllChats(JSON.parse(localStorage.getItem('currentG')))
+    }
+})
+
+socket.on('superadminadded',()=>{
+    // const pr=new Promise((res,rej)=>{
+    //     getAllGroup();
+    //     res('ok')
+    // })
+    // pr.then()
+    getAllGroup()
+    if(localStorage.getItem('currentG')){
+        getAllAdmin(JSON.parse(localStorage.getItem('currentG')))
+    }
+    
+})
+// socket.on('groupcreated',()=>{
+//     getAllGroup()
+//     // if(localStorage.getItem('currentG')){
+//     //     getAllChats(JSON.parse(localStorage.getItem('currentG')))
+//     // }
+// })
+    // ... Handle other events like user messages in the group ...
+ 
+// setInterval( ()=>{
+//     getAllGroup()
+//     if(localStorage.getItem('currentG')){
+//         getAllChats(JSON.parse(localStorage.getItem('currentG')))
+//     }
+// },1000)
 
 
 // window.addEventListener('beforeunload', function (event) {
@@ -571,4 +743,3 @@ setInterval( ()=>{
 //             })
 //     }
 // }
-

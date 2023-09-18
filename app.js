@@ -1,30 +1,19 @@
-const express= require('express')
+const express = require('express')
+const bcrypt = require('bcrypt')
+const http=require('http')
 
-const bcrypt=require('bcrypt')
-
-const jwt=require('jsonwebtoken')
-const path =require('path')
-
+const socketIo = require('socket.io');
+const jwt = require('jsonwebtoken')
+const path = require('path')
 require('dotenv').config();
-
-const {User,personalMsg,Group,Admin}=require('./Models/models')
-
-const sequelize=require('./Utils/databasecon')
-
-const route=require('./Routes/routes')
-
-// const cors=require('cors')
+const { User, personalMsg, Group, Admin } = require('./Models/models')
+const sequelize = require('./Utils/databasecon')
+const route = require('./Routes/routes')
 
 User.hasMany(personalMsg)
-
 personalMsg.belongsTo(User)
-
-// User.hasMany(Group,{foreignKey:'creator'});
-// Group.belongsTo(User,{foreignKey:'creator'});
-
-User.belongsToMany(Group,{through:'usergroup'})
-Group.belongsToMany(User,{through:'usergroup'}) 
-
+User.belongsToMany(Group, { through: 'usergroup' })
+Group.belongsToMany(User, { through: 'usergroup' })
 Group.hasMany(personalMsg);
 personalMsg.belongsTo(Group)
 
@@ -33,21 +22,81 @@ Admin.belongsTo(User)
 Group.hasMany(Admin);
 Admin.belongsTo(Group)
 
-sequelize.sync({alter:true})
-// sequelize.drop({force:true})
+const app = express();
 
-const app=express();
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server,
+//   {
+//     cors: {
+//       origin: ['http://127.0.0.1:3000']
+//     }
+//   }
+// );
 
-app.use(express.static(path.join(__dirname,'public')))
+const server = http.createServer(app);
+const io = socketIo(server);
 
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
+app.use('/', route)
 
-// app.use(cors({
-//     origin:'http://127.0.0.1:5500',
-//     methods:['put','get','delete','post']
-// }))
-// app.use(cors())
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
 
-app.use('/',route)
+  // Handle events when messages are sent
+  // socket.on('new message', (data) => {
+  //   // Broadcast the message to all connected clients
+  //   io.emit('new message', {
+  //     username: socket.username,
+  //     message: data,
+  //   });
+  // });
 
-app.listen(3000)
+  // Add more event handlers for your application as needed
+
+  // Handle disconnection
+  // socket.on('disconnect', () => {
+  //   console.log('Client disconnected:', socket.id);
+  //   io.emit('user disconnected', { userId: socket.id });
+  // });
+  
+
+  socket.on('userjoined',()=>{
+    console.log('userjoined')
+    io.emit('userjoined')
+  })
+  socket.on('userremovedfromgroup',()=>{
+    console.log('userremovedfromgroup')
+    io.emit('userremovedfromgroup')
+  })
+  socket.on('madeadmin',()=>{
+    io.emit('madeadmin')
+  })
+  socket.on('removedfromadmin',()=>{
+    io.emit('removedfromadmin')
+  })
+  socket.on('usermessaged',()=>{
+    io.emit('usermessaged')
+  })
+  socket.on('superadminadded',()=>{
+    io.emit('superadminadded')
+  })
+  // socket.on('groupcreated',()=>{
+  //   socket.emit('groupcreated')
+  // })
+
+});
+
+// ... your routes and other code ...
+
+// server.listen(3000, () => {
+//   console.log('Server is running on port 3000');
+// });
+
+sequelize.sync({ alter: true }).then(() => {
+  server.listen(3000)
+  // app.listen(3000)
+}).catch(err => {
+  console.log(err)
+})
+

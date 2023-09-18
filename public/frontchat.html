@@ -30,23 +30,35 @@
             padding:0px;
         } */
 
+        /* #chats{
+            max-width: 70%;
+            overflow: auto;
+        } */
+
         .chatting {
             flex-grow: 1;
             display: flex;
             flex-direction: row;
-            /* min-height:80vh */
+            
             /* overflow: auto; */
         }
         #chatting{
             /* min-height: 400px; */
+            max-height: 90%;
             overflow-y: auto;
 
         }
         .chatting p{
             color:white;
-        }
-        .chatting p{
             word-wrap: break-word;
+        }
+        /* .chatting div{
+            display: block;
+            color:white;
+            word-wrap: break-word;
+        } */
+        .chatting{
+            max-height: 80%;
         }
         .groupinput{
             display: flex;
@@ -54,6 +66,13 @@
         }
         #groupname{
             word-wrap:break-word;
+            max-height: 75%;
+            overflow:auto ;
+            padding-bottom: 15px;
+        }
+        #chatting{
+            margin-bottom: 15px;
+            padding-bottom: 15px;;
         }
         #groupname :hover{
             cursor: pointer;
@@ -83,11 +102,7 @@
             display:flex;
             flex-direction: row;
         }
-        #groupname{
-            height: 75vh;
-            overflow:auto ;
-            
-        }
+       
         
         #adminhead{
             display:flex;
@@ -111,6 +126,45 @@
             font-weight: bold;
             background-color: blue;
         }
+        .lefttext{
+
+            background-color:rgba(23, 192, 204, 0.541);
+            /* text-decoration-color:black; */
+            padding-left:15px;
+            margin-left: 35px;
+            padding-right:10px;
+            border-top-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            font-size: 20px;
+            /* font-weight: bold; */
+            display: inline-block;
+            /* float:left; */
+            clear:left;
+            word-wrap: break-word;
+            max-width:80%;
+
+        }
+        .righttext{
+            background-color:rgba(226, 255, 3, 0.325);
+            padding-right: 15px;
+            margin-right: 35px;
+            /* margin-left: 0px; */
+            /* color:black; */
+            padding-left:10px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            text-align-last: right;
+            font-size: 20px;
+            /* font-weight: bold; */
+            display: inline-block;
+             /* float:right; */
+            clear:right;
+            word-wrap: break-word;
+            max-width: 80%;
+            
+        }
       
     </style>
     <title>ChatApp</title>
@@ -119,7 +173,7 @@
 <body>
     <h2 style="width:200px;margin: auto;color:white">Chat App</h2>
 
-    <div class="chatting" style="width: 1000px; border: 5px solid aqua; margin:auto;border-radius: 5px;">
+    <div class="chatting" style="border: 5px solid aqua; margin:auto;border-radius: 5px;">
         <div id="group" style="width: 200px; border-right: 5px solid rgb(255, 178, 127);">
             <div id="grouphead" style="background-color: rgb(134, 134, 162);height:45px;display:flex;justify-content:  end;"> <button id='creategroup' style="border-radius: 22.5px;">Create Group</button></div>
             <div class="groupinput" id="groupinputs" ><input type="text" style="width:130px;display: none;" id="groupinput" ><button id="creating" style="display: none;">create</button></div>
@@ -136,7 +190,7 @@
             </div>
         </div>
 
-        <div id="users" style="width: 300px; border-left: 5px solid rgb(255, 178, 127);">
+        <div id="users" style="width: 200px; border-left: 5px solid rgb(255, 178, 127);">
             <header id="adminhead" ></header>
             <div id="listuser" style="overflow: auto;"></div>
         </div>
@@ -166,6 +220,11 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
         </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+
+
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+        
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
     <script src="./frontchat.js"></script>
 </body>
 

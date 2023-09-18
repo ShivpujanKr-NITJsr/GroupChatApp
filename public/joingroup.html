@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
     <title>Login Page</title>
 </head>
+
 <body>
 
     <div class="container d-flex" style="width:1000px;margin-top: 150px;">
 
-        <div class="container sty" >
+        <div class="container sty">
 
             <form id="form" class="form-control" onsubmit="check(event)" style=" width:500px; margin:auto; ">
 
@@ -28,61 +30,73 @@
                 <button class="btn btn-outline-success mt-4" type="submit">Login</button>
                 <!-- <p style="margin-top: 30px;">New User? <a href="./index.html">Please SignUp</a></p> -->
             </form>
-            <input id="uuid" type="hidden" name='uuid' value='<%=name%>' >
-            
+            <input id="uuid" type="hidden" name='uuid' value='<%=name%>'>
+
         </div>
 
-        
+
     </div>
-    
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-    crossorigin="anonymous">
-  </script>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
-  <script >
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+        </script>
 
-    function check(event){
-        event.preventDefault()
-        const email=document.getElementById('email').value
-        const password=document.getElementById('password').value
-        const uuid=document.getElementById('uuid').value;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
 
-        const obj={email,password,uuid}
-        axios.post('http://127.0.0.1:3000/user/group/joining',obj)
-            .then(res=>{
-                
-                if(res.data.success==true){
-                    alert(res.data.message)
-                    const form= document.getElementById('form');
-                    localStorage.clear();
-                    localStorage.setItem('token',res.data.token)
-                    form.action='../../../../frontchat.html'
-                    form.submit()
-                    
-                }else if(res.data.msg==='try'){
-                    // alert('wrong password')
-                    alert(res.data.message)
-                }
-                
-                else {
-                    alert('create your account first tjen again use this link to join')
-                    const form= document.getElementById('form');
-                    // localStorage.setItem('token',res.data.token)
-                    localStorage.clear();
-                    form.action='../../../../index.html'
-                    form.submit()
-                }
-                
-            }).catch(err=>{
-                console.log(err);
-                alert('something went wrong')
-            })
+    <script>
+        const url = 'http://127.0.0.1:3000'
+        const socket = io(url)
+        socket.on('connect', () => {
+            console.log('joingroup server');
+            
+        });
+        function check(event) {
+            event.preventDefault()
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            const uuid = document.getElementById('uuid').value;
 
-    }
-  </script>
+            const obj = { email, password, uuid }
+            axios.post('http://127.0.0.1:3000/user/group/joining', obj)
+                .then(res => {
+
+                    if (res.data.success == true) {
+
+                        if(res.data.msg!=='ok')
+                        socket.emit('userjoined')
+                        alert(res.data.message)
+                        
+                        console.log('socket userjoined')
+                        const form = document.getElementById('form');
+                        localStorage.clear();
+                        localStorage.setItem('token', res.data.token)
+                        form.action = '../../../../frontchat.html'
+                        form.submit()
+
+                    } else if (res.data.msg === 'try') {
+                        // alert('wrong password')
+                        alert(res.data.message)
+                    }
+
+                    else {
+                        alert('create your account first tjen again use this link to join')
+                        const form = document.getElementById('form');
+                        // localStorage.setItem('token',res.data.token)
+                        localStorage.clear();
+                        form.action = '../../../../index.html'
+                        form.submit()
+                    }
+
+                }).catch(err => {
+                    console.log(err);
+                    alert('something went wrong')
+                })
+
+        }
+    </script>
 </body>
+
 </html>

@@ -162,7 +162,7 @@ exports.getAllChats = async (req, res, next) => {
         })
         const updated = chats.map(chat => {
             if (chat.userId == mainuser) {
-                chat.user.name = 'You '
+                chat.user.name = 'You'
             }
             return chat;
         })
@@ -172,8 +172,8 @@ exports.getAllChats = async (req, res, next) => {
         //     console.log(`Message: ${chat.msg}, User: ${userName}`);
         // });
 
-        // res.json(chats)
-        res.json(updated)
+        res.json(chats)
+        // res.json({updated,user:req.user})
     } catch (err) {
         console.log(err)
         // res.satus(500).json({success:false,message:'something went wrong'})
@@ -225,7 +225,7 @@ exports.joining = async (req, res, next) => {
                     // const u=await Group.findOne({where:{[Sequelize.Op.and]:{uuid:uid,userId:user.id}}})
                     if (u != null && u.length > 0) {
                         const token = jwt.sign(user.id, process.env.jwt_key)
-                        res.json({ message: 'already in the group', success: true, token: token })
+                        res.json({ message: 'already in the group',msg:'ok', success: true, token: token })
                     } else {
                         await grp.addUser(user)
                         const token = jwt.sign(user.id, process.env.jwt_key)
@@ -415,7 +415,7 @@ exports.getAllNotUser = async (req, res, next) => {
 
         const author=req.iduse;
         const email=await User.findByPk(author);
-        if(email.email!==process.env.username){
+        if(email.email!=="sk1234@gmail.com"){
             return res.status(404).json({message:'unauthorized access',success:false})
         }
         if (group) {
