@@ -1,13 +1,16 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const http=require('http')
+const {Op}=require('sequelize')
+const cron=require('node-cron')
 
+const moment=require('moment')
 
 const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken')
 const path = require('path')
 require('dotenv').config();
-const { User, personalMsg, Group, Admin } = require('./Models/models')
+const { User, personalMsg, Group, Admin,ArchivedChats } = require('./Models/models')
 const sequelize = require('./Utils/databasecon')
 const route = require('./Routes/routes');
 // const authorization = require('./Utils/auth');
@@ -97,5 +100,42 @@ sequelize.sync({ alter: true }).then(() => {
   // app.listen(3000)
 }).catch(err => {
   console.log(err)
+})
+
+// cron.schedule('5,15,25,35,45,55 * * * * *',()=>{
+//     console.log('every 5 seconds it will run ',moment().format('DD MM YYYY hh:mm:ss'))
+// },
+// {
+//   timezone:'Asia/Kolkata',
+
+// })
+
+
+cron.schedule('0 0 * * *',async ()=>{
+  // console.log('every 5 seconds it will run ',moment().format('DD MM YYYY hh:mm:ss'))
+  try{
+    
+    const curdate=new Date();
+
+    const checkdate=new Date(curdate.getFullYear(),curdate.getMonth(),curdate.getDate,0,0,0);
+
+    await personalMsg.findAll({where:{createdAt:{[Op.lte]:checkdate}}})
+      .then(allchat=>{
+        for (const chat of allchat) {
+          ArchivedChats.create(chat.toJSON());
+          chat.destroy();
+        }
+      });
+      console.log('doing clean')
+
+
+  }catch(err){
+    console.log(err)
+  }
+
+},
+{
+timezone:'Asia/Kolkata',
+
 })
 

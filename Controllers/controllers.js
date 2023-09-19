@@ -603,39 +603,40 @@ exports.directAdd = async (req, res, next) => {
 }
 
 exports.fileSharing = async (req, res, next) => {
-    try {
-        const grid = req.body.grid;
-        const userid = req.iduse;
-        const file = req.file;
+    res.status(404).json({message:'disabled features',success:true})
+    // try {
+    //     const grid = req.body.grid;
+    //     const userid = req.iduse;
+    //     const file = req.file;
 
-        const gu = await req.user.getGroups({ where: { id: grid } })
-        // console.log(gu)
-        if (gu != '') {
-            console.log(file)
-            let type;
-            if (file.mimetype.startsWith('image')) {
-                type = 'image'
-            } else if (file.mimetype.startsWith('video')) {
-                type = 'video'
-            } else {
-                type = 'other'
-            }
-            let originalname=file.originalname
-            const ext=originalname.slice(originalname.lastIndexOf('.')+1)
-            const fname=`DemoChat/${userid}/${grid}/${new Date()}.${ext}`
-            const fileUrl=await uploadingFile(file,fname)
-            console.log(fileUrl)
-            await req.user.createPersonalmsg({msg:fileUrl,type:type,groupId:grid})
+    //     const gu = await req.user.getGroups({ where: { id: grid } })
+    //     // console.log(gu)
+    //     if (gu != '') {
+    //         console.log(file)
+    //         let type;
+    //         if (file.mimetype.startsWith('image')) {
+    //             type = 'image'
+    //         } else if (file.mimetype.startsWith('video')) {
+    //             type = 'video'
+    //         } else {
+    //             type = 'other'
+    //         }
+    //         let originalname=file.originalname
+    //         const ext=originalname.slice(originalname.lastIndexOf('.')+1)
+    //         const fname=`DemoChat/${userid}/${grid}/${new Date()}.${ext}`
+    //         const fileUrl=await uploadingFile(file,fname)
+    //         console.log(fileUrl)
+    //         await req.user.createPersonalmsg({msg:fileUrl,type:type,groupId:grid})
 
-            res.status(200).json({message:'succesfully uploaded',success:true})
+    //         res.status(200).json({message:'succesfully uploaded',success:true})
 
-        } else {
-            res.status(404).json({ message: 'unauthorized', success: false })
-        }
+    //     } else {
+    //         res.status(404).json({ message: 'unauthorized', success: false })
+    //     }
 
-    } catch (err) {
-        console.log(err)
-    }
+    // } catch (err) {
+    //     console.log(err)
+    // }
 }
 
 function uploadingFile(data, filename) {

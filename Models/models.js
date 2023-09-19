@@ -54,6 +54,16 @@ const Admin=sequelize.define('admin',{
     }
 })
 
+const ArchivedChats=sequelize.define('archivedchats',{
+    id:{
+        type:Sequelize.INTEGER,
+        primaryKey:true,
+        // autoIncrement:true,
+        allowNull:false
+    },
+    msg:Sequelize.STRING,
+    type:Sequelize.STRING
+})
 
 
-module.exports={User,personalMsg,Group,Admin}
+module.exports={User,personalMsg,Group,Admin,ArchivedChats}
