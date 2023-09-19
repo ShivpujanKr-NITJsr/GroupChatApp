@@ -8,8 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
     <style>
-        
         footer {
             position: sticky;
             margin-bottom: 10px;
@@ -39,100 +41,116 @@
             flex-grow: 1;
             display: flex;
             flex-direction: row;
-            
+
             /* overflow: auto; */
         }
-        #chatting{
+
+        #chatting {
             /* min-height: 400px; */
             max-height: 90%;
             overflow-y: auto;
 
         }
-        .chatting p{
-            color:white;
+
+        .chatting p {
+            color: white;
             word-wrap: break-word;
         }
+
         /* .chatting div{
             display: block;
             color:white;
             word-wrap: break-word;
         } */
-        .chatting{
+        .chatting {
             max-height: 80%;
         }
-        .groupinput{
+
+        .groupinput {
             display: flex;
             flex-direction: row;
         }
-        #groupname{
-            word-wrap:break-word;
+
+        #groupname {
+            word-wrap: break-word;
             max-height: 75%;
-            overflow:auto ;
+            overflow: auto;
             padding-bottom: 15px;
         }
-        #chatting{
+
+        #chatting {
             margin-bottom: 15px;
-            padding-bottom: 15px;;
+            padding-bottom: 15px;
+            ;
         }
-        #groupname :hover{
+
+        #groupname :hover {
             cursor: pointer;
             background-color: white;
-            color:black;
+            color: black;
             padding-left: 10px;
-            font-weight:bold;
+            font-weight: bold;
         }
+
         /* #groupname p:hover{
             cursor: pointer;
             background-color: black;
             color: white;
         } */
-        #sharelink:hover{
-            font-weight:bold;
+        #sharelink:hover {
+            font-weight: bold;
             background-color: blueviolet;
         }
-        #creategroup:hover{
+
+        #creategroup:hover {
             font-weight: bold;
             background-color: blue;
         }
-        #chattinghead{
-            word-wrap:break-word;
-            
+
+        #chattinghead {
+            word-wrap: break-word;
+
         }
-        #ro{
-            display:flex;
+
+        #ro {
+            display: flex;
             flex-direction: row;
         }
-       
-        
-        #adminhead{
-            display:flex;
+
+
+        #adminhead {
+            display: flex;
             flex-direction: row;
             /* width:100%; */
         }
-        #listuser{
+
+        #listuser {
             word-wrap: break-word;
         }
+
         .custom-cursor {
             cursor: pointer;
         }
 
-        .custom-cursor:hover{
+        .custom-cursor:hover {
             background-color: black;
             padding-left: 15px;
             color: white;
             font-weight: bolder;
         }
-        #adduser:hover{
+
+        #adduser:hover {
             font-weight: bold;
             background-color: blue;
         }
-        .lefttext{
 
-            background-color:rgba(23, 192, 204, 0.541);
+        .lefttext {
+
+            background-color: rgba(23, 192, 204, 0.541);
             /* text-decoration-color:black; */
-            padding-left:15px;
+            padding-left: 15px;
             margin-left: 35px;
-            padding-right:10px;
+            padding-right: 10px;
             border-top-right-radius: 15px;
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
@@ -140,18 +158,19 @@
             /* font-weight: bold; */
             display: inline-block;
             /* float:left; */
-            clear:left;
+            clear: left;
             word-wrap: break-word;
-            max-width:80%;
+            max-width: 80%;
 
         }
-        .righttext{
-            background-color:rgba(226, 255, 3, 0.325);
+
+        .righttext {
+            background-color: rgba(226, 255, 3, 0.325);
             padding-right: 15px;
             margin-right: 35px;
             /* margin-left: 0px; */
             /* color:black; */
-            padding-left:10px;
+            padding-left: 10px;
             border-top-right-radius: 15px;
             border-top-left-radius: 15px;
             border-bottom-left-radius: 15px;
@@ -159,13 +178,45 @@
             font-size: 20px;
             /* font-weight: bold; */
             display: inline-block;
-             /* float:right; */
-            clear:right;
+            /* float:right; */
+            clear: right;
             word-wrap: break-word;
             max-width: 80%;
-            
+
         }
-      
+
+        .fileupload:hover {
+            background-color: rgb(255, 17, 0);
+            size: 30px;
+            cursor: pointer;
+
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            /* top: 0;
+            left: 0; */
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 25px;
+            cursor: pointer;
+        }
     </style>
     <title>ChatApp</title>
 </head>
@@ -175,30 +226,30 @@
 
     <div class="chatting" style="border: 5px solid aqua; margin:auto;border-radius: 5px;">
         <div id="group" style="width: 200px; border-right: 5px solid rgb(255, 178, 127);">
-            <div id="grouphead" style="background-color: rgb(134, 134, 162);height:45px;display:flex;justify-content:  end;"> <button id='creategroup' style="border-radius: 22.5px;">Create Group</button></div>
-            <div class="groupinput" id="groupinputs" ><input type="text" style="width:130px;display: none;" id="groupinput" ><button id="creating" style="display: none;">create</button></div>
+            <div id="grouphead"
+                style="background-color: rgb(134, 134, 162);height:45px;display:flex;justify-content:  end;"> <button
+                    id='creategroup' style="border-radius: 22.5px;">Create Group</button></div>
+            <div class="groupinput" id="groupinputs"><input type="text" style="width:130px;display: none;"
+                    id="groupinput"><button id="creating" style="display: none;">create</button></div>
 
             <div style="text-align: center;color: blueviolet;">List of group</div>
             <div id="groupname" style="overflow-y: auto;"></div>
         </div>
 
-        <div >
-            <header id="ro" ></header>
+        <div>
+            <header id="ro"></header>
             <div id="chatting" style="width:592px ;">
-        
-        
+
+
             </div>
         </div>
 
         <div id="users" style="width: 200px; border-left: 5px solid rgb(255, 178, 127);">
-            <header id="adminhead" ></header>
+            <header id="adminhead"></header>
             <div id="listuser" style="overflow: auto;"></div>
         </div>
-        
+
     </div>
-
-    
-
 
 
 
@@ -207,8 +258,42 @@
             style="background-color: rgba(2, 64, 99, 0.756);border-top-right-radius: 10px;border-top-left-radius: 10px;height:40px;">
             <div class="container bg-body-secondary rounded-2"
                 style="height:35px;display: flex;flex-direction: row;width: 600px;">
+                <div class="fileupload" id="sendfile" style="margin-right: 5px;">
+
+                    <!-- <form method="POST" enctype="multipart/form-data" id="chatBoxForm"
+                        class="d-flex flex-row w-100 align-items-center">
+                        <label class="btn btn-warning me-1 px-2" for="fileUpload"><i
+                                class="fa-solid fa-photo-film fs-5"></i></label>
+                        <input type="file" class="form-control d-none" id="fileUpload" accept="image/*" />
+                        <input class="form-control me-1" type="text" name="chatText" id="chatText"
+                            placeholder="Type a message..." />
+                        <button id="chatSubmitBtn" class="btn btn-warning" type="submit" value="SEND">
+                            <i class="fa-solid fa-paper-plane fs-5"></i>
+                        </button>
+                    </form> -->
+                    <label for="selectfile" class="fileupload" id="selectfile"><img src="./img/uploads.png" alt="files"
+                            title="share files" height="35px"></label>
+
+                    <!-- <input type="file" id="selectfile" accept="*" style="display: none;" maxlength="5000000"> -->
+                    <!-- <button ></button> -->
+                    <!--                                             upload modal -->
+                    <div class="modal">
+                        <div class="modal-content">
+                            <span class="close-button">&times;</span>
+                            <!-- Add your modal content here
+                            <h2>Modal Title</h2>
+                            <p>This is the modal content.</p> -->
+                            <input type="file" maxlength="5000000" id="storefile" >
+                            <button id="uploading" class="btn btn-outline-danger mt-4">Send</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div>
+                    <label for="sendfile" class="btn fileupload"></label>
+                </div> -->
+
                 <div class="chat d-flex align-items-center justify-content-center" style="width:500px;">
-                    <input type="text" class="col-sm-12" id="chats"  required>
+                    <input type="text" class="col-sm-12" id="chats" placeholder="Type Your mesaages here" required>
                 </div>
                 <div class="btn" id="bt">Send</div>
             </div>
@@ -223,8 +308,10 @@
 
 
     <!-- <script src="/socket.io/socket.io.js"></script> -->
-        
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
     <script src="./frontchat.js"></script>
 </body>
 

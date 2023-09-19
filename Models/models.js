@@ -23,7 +23,8 @@ const personalMsg=sequelize.define('personalmsg',{
         autoIncrement:true,
         allowNull:false
     },
-    msg:Sequelize.STRING
+    msg:Sequelize.STRING,
+    type:Sequelize.STRING
 })
 
 const Group=sequelize.define('group',{

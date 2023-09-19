@@ -6,10 +6,10 @@ function check(event){
     const email=document.getElementById('email').value;
     const password=document.getElementById('password').value;
 
-    const obj={email,password};
+    const obj={email,password,signup:false};
     console.log(email)
 
-    const gurl=url+'/user/login';
+    const gurl=url+'/user/loginsignup';
     // alert('i am js')
     axios.post(gurl,obj)
         .then(res=>{

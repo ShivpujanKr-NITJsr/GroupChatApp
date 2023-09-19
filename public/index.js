@@ -17,13 +17,13 @@ function checking(event){
         return false;
     }
     else{
-        const obj={name,email,phone,password};
+        const obj={name,email,phone,password,signup:true};
         // name.value=''
         //     email.value='';password.value='';
         console.log('i am ')
-        const purl=url+'/user/signup'
+        const purl=url+'/user/loginsignup'
         console.log(purl)
-        axios.post(`http://127.0.0.1:3000/user/signup`,obj)
+        axios.post(`http://127.0.0.1:3000/user/loginsignup`,obj)
             .then((res)=>{
                 if(res.data.msg==='ok'){
                     alert('"Successfuly signed up"')

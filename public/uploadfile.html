@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add your modal styles here */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 25px;
+            cursor: pointer;
+        }
+    </style>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <!-- Add your modal content here -->
+            <h2>Modal Title</h2>
+            <p>This is the modal content.</p>
+        </div>
+    </div>
+</body>
+<script>
+    // Add this script at the end of your modal.html file
+    const modal = document.querySelector('.modal');
+    const closeButton = document.querySelector('.close-button');
+
+    closeButton.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    // Open the modal when the page loads (optional)
+    window.onload = function () {
+        modal.style.display = 'block';
+    };
+
+</script>
+
+</html>

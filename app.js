@@ -2,13 +2,21 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 const http=require('http')
 
+
 const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken')
 const path = require('path')
 require('dotenv').config();
 const { User, personalMsg, Group, Admin } = require('./Models/models')
 const sequelize = require('./Utils/databasecon')
-const route = require('./Routes/routes')
+const route = require('./Routes/routes');
+// const authorization = require('./Utils/auth');
+const AWS=require('aws-sdk')
+
+//          multer for file parsing as buffer
+const multer=require('multer')
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ storage: storage });
 
 User.hasMany(personalMsg)
 personalMsg.belongsTo(User)
@@ -37,30 +45,21 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 app.use(express.static(path.join(__dirname, 'public')))
+
 app.use(express.json())
+
+app.use('/user/filesharing/:token',upload.single('file'),(req,res,next)=>{
+  req.body.token=req.params.token;
+  next()
+})
+
 app.use('/', route)
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
-  // Handle events when messages are sent
-  // socket.on('new message', (data) => {
-  //   // Broadcast the message to all connected clients
-  //   io.emit('new message', {
-  //     username: socket.username,
-  //     message: data,
-  //   });
-  // });
 
-  // Add more event handlers for your application as needed
-
-  // Handle disconnection
-  // socket.on('disconnect', () => {
-  //   console.log('Client disconnected:', socket.id);
-  //   io.emit('user disconnected', { userId: socket.id });
-  // });
   
-
   socket.on('userjoined',()=>{
     console.log('userjoined')
     io.emit('userjoined')

@@ -5,6 +5,74 @@ const socket=io(url)
 
 
 
+        // document.getElementById("openModalButton").addEventListener("click", function() {
+        //     // Open the modal by navigating to the modal.html file
+        //     window.location.href = "modal.html";
+        // });
+const closeButton = document.querySelector('.close-button');
+const modal = document.querySelector('.modal');
+closeButton.addEventListener('click', function () {
+    modal.style.display = 'none';
+    document.body.style.overflow = "auto"
+});
+document.getElementById('uploading').addEventListener('click',(e)=>{
+    const fileForUpload=document.getElementById('storefile').files[0];
+    // e.stopPropagation()
+    // console.log(fileForUpload)
+    if(!fileForUpload) {
+        alert('no file choosen')
+        return;
+    }
+    if(fileForUpload.size>'4000000'){
+        alert('only size upto 3MB can be sent')
+        return;
+    }else{
+        modal.style.display = 'none';
+        document.body.style.overflow = "auto"
+        const formdata=new FormData();
+        formdata.append('file',fileForUpload);
+        const token=localStorage.getItem('token');
+        const grid=JSON.parse(localStorage.getItem('currentG')).id
+        // formdata.append('token',token)
+        formdata.append('grid',grid)
+        // for(let key of formdata.entries()){
+        //     console.log(key[0],key[1])
+        // }
+        axios.post(`/user/filesharing/${token}`,formdata,
+            {headers: {
+                'Content-Type': 'multipart/form-data', // Important to set the correct content type
+                
+            }})
+            .then(result=>{
+                // alert('file uploaded')
+                
+                socket.emit('usermessaged')
+            }).catch(err=>{
+                alert('something went wrong/ features disabled')
+            })
+    }
+    // console.log(fileForUpload)
+})
+document.getElementById('selectfile').addEventListener('click',(e)=>{
+    // window.location.href = "uploadfile.html";
+    
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+    
+
+    // e.preventDefault()
+    // console.log(e.target.files[0])
+
+    // const div=document.createElement('div');
+    // div.className='modal-body'
+    // div.innerHTML=`<h5>Popover in a modal</h5>
+    // <p>This <a href="#" role="button" class="btn btn-secondary popover-test" title="Popover title" data-content="Popover body content is set in this attribute.">button</a> triggers a popover on click.</p>
+    // <hr>
+    // <h5>Tooltips in a modal</h5>
+    // <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> have tooltips on hover.</p>`
+    // document.body.appendChild(div)
+})
+
 document.getElementById('bt').addEventListener('click',(event)=>{
     const chatmsg=document.getElementById('chats').value.trim()
     let grid;
@@ -78,10 +146,10 @@ document.getElementById('creategroup').addEventListener('click',()=>{
 
 // let foundCurrent=false;
 const getAllGroup=()=>{
-    const purl=url+'/user/getallgroup';
+    const purl=url+'/user/getallgroup/getallchat/5';
 
     let found=false;
-    axios.post(purl,{token:localStorage.getItem('token')})
+    axios.post(purl,{token:localStorage.getItem('token'),getAllG:true})
         .then(res=>{
             
             const parent=document.getElementById('groupname')
@@ -421,7 +489,8 @@ function functionalityRMRA(event,user,command){
     
 }
 function removeUser(obj){
-    const purl=url+`/user/group/remove/${obj.gid}`
+    const purl=url+`/user/group/makeadmin/${obj.gid}`
+    obj.removeuser=true
     axios.post(purl,obj)
         .then(res=>{
             socket.emit('userremovedfromgroup')
@@ -434,6 +503,7 @@ function removeUser(obj){
 
 }
 function makeAdminUser(obj){
+    obj.makead=true;
     const purl=url+`/user/group/makeadmin/${obj.gid}`
     axios.post(purl,obj)
         .then(res=>{
@@ -444,7 +514,8 @@ function makeAdminUser(obj){
         })
 }
 function removeFromAdminUser(obj){
-    const purl=url+`/user/group/removeadmin/${obj.gid}`
+    obj.makead=false;
+    const purl=url+`/user/group/makeadmin/${obj.gid}`
     axios.post(purl,obj)
         .then(res=>{
             socket.emit('removedfromadmin')
@@ -516,9 +587,10 @@ const getAllChats=(group)=>{
             }
         }
     })
-    const purl=url+`/user/group/allchat/${group.id}`
+    const purl=url+`/user/getallgroup/getallchat/${group.id}`
     const objname={
-        token:localStorage.getItem('token')
+        token:localStorage.getItem('token'),
+        getAllG:false
     }
     axios.post(purl,objname)
         .then(res=>{
@@ -568,41 +640,77 @@ function show(data){
     parent.style.padding='5px'
     // let chan=true;
     for(let i=0;i<data.length;i++){
-        const p=document.createElement('p');
-        // console.log(data[i].user.name, 'You')
         const dip=document.createElement('div')
-        // dip.style.width='592px'
-        p.style.margin='5px'
-        
-        if(data[i].user.name.trim()==='You'){
+        if(data[i].type){
+            let img;
+            if(data[i].type==='image'){
+                img=document.createElement('img');
+                img.style.width='80%';
+                img.style.height='auto';
+                img.src=data[i].msg;
+                img.alt='image'
+                img.style.marginBottom='15px'
+            }else if(data[i].type==='video'){
+                img=document.createElement('video');
+                img.style.width='80%';
+                img.style.height='auto';
+                img.src=data[i].msg;
+                img.controls=true;img.style.marginBottom='15px'
 
-            p.classList.add('righttext')
-            p.style.color='black'
-            p.innerHTML=`${data[i].msg} : <b>${data[i].user.name}</b>`;
-        //    if(i>0){
-        //         if(data[i].user.name.trim()==='You' &&
-        //         data[i-1].user.name.trim()==='You'){
-        //             const br=document.createElement('br')
-        //             parent.appendChild(br)
-        //         }
-        //    }
+            }else{
+                img=document.createElement('a')
+                img.href=data[i].msg;
+                img.textContent=data[i].msg;
+                img.style.width='80%';img.style.marginBottom='15px'
+                img.style.wordWrap='break-word'
+            }
+            
+            // console.log(data[i])
+
+
+
+            dip.appendChild(img)
+            parent.appendChild(dip)
+            parent.scrollTop=parent.scrollHeight
 
         }else{
-            p.classList.add('lefttext')
-            p.style.color='black'
-            p.innerHTML=`<b>${data[i].user.name}</b> : ${data[i].msg}`;
-            // if(i>0){
-            //     if(data[i].user.name.trim()===data[i-1].user.name.trim()){
-            //         const br=document.createElement('br')
-            //         parent.appendChild(br)
-            //     }
-            // }
-        }
-        // dip.style.paddingBottom='5px'
-        dip.appendChild(p)
-        parent.appendChild(dip)
-        parent.scrollTop=parent.scrollHeight
+            const p=document.createElement('p');
+            // console.log(data[i].user.name, 'You')
+            
+            // dip.style.width='592px'
+            p.style.margin='5px'
+            
+            if(data[i].user.name.trim()==='You'){
 
+                p.classList.add('righttext')
+                p.style.color='black'
+                p.innerHTML=`${data[i].msg} : <b>${data[i].user.name}</b>`;
+            //    if(i>0){
+            //         if(data[i].user.name.trim()==='You' &&
+            //         data[i-1].user.name.trim()==='You'){
+            //             const br=document.createElement('br')
+            //             parent.appendChild(br)
+            //         }
+            //    }
+
+            }else{
+                p.classList.add('lefttext')
+                p.style.color='black'
+                p.innerHTML=`<b>${data[i].user.name}</b> : ${data[i].msg}`;
+                // if(i>0){
+                //     if(data[i].user.name.trim()===data[i-1].user.name.trim()){
+                //         const br=document.createElement('br')
+                //         parent.appendChild(br)
+                //     }
+                // }
+            }
+            // dip.style.paddingBottom='5px'
+            dip.appendChild(p)
+            parent.appendChild(dip)
+            parent.scrollTop=parent.scrollHeight
+
+        }
+        
     }
 }
 

@@ -4,62 +4,88 @@ const jwt = require('jsonwebtoken')
 const Sequelize = require('sequelize');
 const { v4: uuidv4 } = require('uuid')
 
+const AWS=require('aws-sdk')
+
 const fs = require('fs')
 const path = require('path');
 const sequelize = require('../Utils/databasecon');
-exports.signUp = (req, res, next) => {
+exports.loginSignUp = (req, res, next) => {
     // console.log(req.body);
-    const name = req.body.name;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    const password = req.body.password;
 
-    User.findOne({ where: { email: email } })
-        .then(result => {
-            if (result != null) {
-                res.status(200).json({ msg: 'already exists' })
-            } else {
+    if (req.body.signup) {
+        const name = req.body.name;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const password = req.body.password;
 
-                bcrypt.hash(password, 10, (err, hash) => {
-                    User.create({ name, email, phone, password: hash })
-                        .then(resul => {
-                            res.status(200).json({ msg: 'ok', message: 'user created successfully' })
-                        }).catch(err => {
-                            throw new Error(err)
-                        })
-                })
+        User.findOne({ where: { email: email } })
+            .then(result => {
+                if (result != null) {
+                    res.status(200).json({ msg: 'already exists' })
+                } else {
 
-            }
-        }).catch(err => {
-            console.log(err);
-            res.status(500).json({ message: 'something went wrong' })
-        })
+                    bcrypt.hash(password, 10, (err, hash) => {
+                        User.create({ name, email, phone, password: hash })
+                            .then(resul => {
+                                res.status(200).json({ msg: 'ok', message: 'user created successfully' })
+                            }).catch(err => {
+                                throw new Error(err)
+                            })
+                    })
 
+                }
+            }).catch(err => {
+                console.log(err);
+                res.status(500).json({ message: 'something went wrong' })
+            })
+
+
+    } else {
+        const email = req.body.email;
+        const password = req.body.password;
+
+        User.findOne({ where: { email: email } })
+            .then(resu => {
+                if (resu != null) {
+
+                    bcrypt.compare(password, resu.password, (err, result) => {
+                        if (result == true) {
+                            const token = jwt.sign(resu.id, process.env.jwt_key)
+                            res.json({ token: token, message: 'User login successful', success: true })
+                        } else {
+                            res.status(401).json({ success: false, message: 'User not authorized' })
+                        }
+                    })
+                } else {
+                    res.status(404).json({ success: false, message: 'User not found' })
+                }
+            }).catch(err => console.log(err))
+    }
 
 }
 
-exports.login = (req, res, next) => {
-    // console.log(req)
-    const email = req.body.email;
-    const password = req.body.password;
+// exports.login = (req, res, next) => {
+//     // console.log(req)
+//     const email = req.body.email;
+//     const password = req.body.password;
 
-    User.findOne({ where: { email: email } })
-        .then(resu => {
-            if (resu != null) {
+//     User.findOne({ where: { email: email } })
+//         .then(resu => {
+//             if (resu != null) {
 
-                bcrypt.compare(password, resu.password, (err, result) => {
-                    if (result == true) {
-                        const token = jwt.sign(resu.id, process.env.jwt_key)
-                        res.json({ token: token, message: 'User login successful', success: true })
-                    } else {
-                        res.status(401).json({ success: false, message: 'User not authorized' })
-                    }
-                })
-            } else {
-                res.status(404).json({ success: false, message: 'User not found' })
-            }
-        }).catch(err => console.log(err))
-}
+//                 bcrypt.compare(password, resu.password, (err, result) => {
+//                     if (result == true) {
+//                         const token = jwt.sign(resu.id, process.env.jwt_key)
+//                         res.json({ token: token, message: 'User login successful', success: true })
+//                     } else {
+//                         res.status(401).json({ success: false, message: 'User not authorized' })
+//                     }
+//                 })
+//             } else {
+//                 res.status(404).json({ success: false, message: 'User not found' })
+//             }
+//         }).catch(err => console.log(err))
+// }
 
 exports.personalMsg = (req, res, next) => {
     const uid = req.iduse
@@ -85,22 +111,22 @@ exports.groupPersonalMsg = (req, res, next) => {
         })
 }
 
-exports.allChat = (req, res, next) => {
+// exports.allChat = (req, res, next) => {
 
-    const lid = req.params.lid;
-    personalMsg.findAll({
-        where: {
-            id: {
-                [Sequelize.Op.gt]: lid,
-            }
-        }
-    })
-        .then(result => {
-            res.json(result)
-        }).catch(err => {
-            console.log(err)
-        })
-}
+//     const lid = req.params.lid;
+//     personalMsg.findAll({
+//         where: {
+//             id: {
+//                 [Sequelize.Op.gt]: lid,
+//             }
+//         }
+//     })
+//         .then(result => {
+//             res.json(result)
+//         }).catch(err => {
+//             console.log(err)
+//         })
+// }
 
 exports.createGroup = async (req, res, next) => {
 
@@ -128,19 +154,56 @@ exports.createGroup = async (req, res, next) => {
 
 }
 
-exports.getAllGroup = async (req, res, next) => {
+exports.getAllGroupChats = async (req, res, next) => {
 
-    const uid = req.iduse;
-    try {
-        const user = await User.findOne({ where: { id: uid } })
+    if (req.body.getAllG) {
+        const uid = req.iduse;
+        try {
+            const user = await User.findOne({ where: { id: uid } })
 
-        const group = await user.getGroups()
+            const group = await user.getGroups()
 
-        res.json(group)
-    } catch (err) {
-        console.log(err)
-        // res.satus(500).json({success:false,message:'something went wrong'})
+            res.json(group)
+        } catch (err) {
+            console.log(err)
+            // res.satus(500).json({success:false,message:'something went wrong'})
+        }
+    } else {
+        const gid = req.params.id;
+        const mainuser = req.iduse
+
+        try {
+            const chats = await personalMsg.findAll({
+                where: { groupId: gid },
+                include: [
+                    {
+                        model: User,
+                        attributes: ['name'],
+                        // as: 'user',
+                    }
+                ],
+                order: [['createdAt', 'ASC']],
+            })
+            const updated = chats.map(chat => {
+                if (chat.userId == mainuser) {
+                    chat.user.name = 'You'
+                }
+                return chat;
+            })
+
+            // chats.forEach(chat => {
+            //     const userName = chat.user ? chat.user.name : 'Unknown User';
+            //     console.log(`Message: ${chat.msg}, User: ${userName}`);
+            // });
+
+            res.json(chats)
+            // res.json({updated,user:req.user})
+        } catch (err) {
+            console.log(err)
+            // res.satus(500).json({success:false,message:'something went wrong'})
+        }
     }
+
 
 }
 
@@ -225,7 +288,7 @@ exports.joining = async (req, res, next) => {
                     // const u=await Group.findOne({where:{[Sequelize.Op.and]:{uuid:uid,userId:user.id}}})
                     if (u != null && u.length > 0) {
                         const token = jwt.sign(user.id, process.env.jwt_key)
-                        res.json({ message: 'already in the group',msg:'ok', success: true, token: token })
+                        res.json({ message: 'already in the group', msg: 'ok', success: true, token: token })
                     } else {
                         await grp.addUser(user)
                         const token = jwt.sign(user.id, process.env.jwt_key)
@@ -302,109 +365,152 @@ exports.allAdminNotAdmin = async (req, res, next) => {
 
 }
 
-exports.removeUserFromGroup = async (req, res, next) => {
-    const removerid = req.iduse;
-    const t = await sequelize.transaction()
+// exports.removeUserFromGroup = async (req, res, next) => {
+//     const removerid = req.iduse;
+//     const t = await sequelize.transaction()
 
-    const grid = req.body.gid;
+//     const grid = req.body.gid;
 
-    const client = req.body.uid;
+//     const client = req.body.uid;
 
-    const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
-    if (isadm.isadmin) {
-        try {
-            const adm = await Admin.findOne({ where: { groupId: grid, userId: client } })
+//     const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
+//     if (isadm.isadmin) {
+//         try {
+//             const adm = await Admin.findOne({ where: { groupId: grid, userId: client } })
 
-            const user = await User.findOne({ where: { id: client } })
-            // console.log('usering ',user)
-            if (adm) {
-                // await user.removeAdmins({where:{groupId:grid},transaction:t})
-                await adm.destroy({ where: { groupId: grid }, transaction: t })
-            }
-            // const gu=await user.getGroups({where:{id:grid}})
-            // console.log('group ',gu )
-            if (user) {
-                await user.removeGroup(grid, { transaction: t })
+//             const user = await User.findOne({ where: { id: client } })
+//             // console.log('usering ',user)
+//             if (adm) {
+//                 // await user.removeAdmins({where:{groupId:grid},transaction:t})
+//                 await adm.destroy({ where: { groupId: grid }, transaction: t })
+//             }
+//             // const gu=await user.getGroups({where:{id:grid}})
+//             // console.log('group ',gu )
+//             if (user) {
+//                 await user.removeGroup(grid, { transaction: t })
 
-                // console.log('321 line')
-                await t.commit()
-                // console.log('323 line')
-                res.json({ message: 'removed from admin and group ', success: true })
-            }
+//                 // console.log('321 line')
+//                 await t.commit()
+//                 // console.log('323 line')
+//                 res.json({ message: 'removed from admin and group ', success: true })
+//             }
 
-        } catch (err) {
-            await t.rollback();
-            console.log(err)
-            res.status(500).json({ message: 'something went wrong' })
-        }
+//         } catch (err) {
+//             await t.rollback();
+//             console.log(err)
+//             res.status(500).json({ message: 'something went wrong' })
+//         }
 
-    } else {
-        res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
-    }
-}
-
-
-exports.removeUserFromAdmin = async (req, res, next) => {
-    const removerid = req.iduse;
-    // const t=await sequelize.transaction()
-
-    const grid = req.body.gid;
-
-    const client = req.body.uid;
-
-    // console.log('345 line')
-    const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
-    if (isadm.isadmin) {
-        try {
-            // const adm=await Admin.findOne({where:{groupId:grid,userId:client}})
-
-            // console.log('352 line')
-            // const user=await User.findOne({where:{id:client}})
-            // if(user.Admin){
-            // await user.removeAdmins(grid)
-            await Admin.destroy({ where: { userId: client, groupId: grid } })
-
-            // console.log('356 line')
-            res.json({ message: 'removed from admin', success: true })
-            // }else{
-            //     res.json({message:'already not an admin',success:true})
-            // }
+//     } else {
+//         res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
+//     }
+// }
 
 
-        } catch (err) {
+// exports.removeUserFromAdmin = async (req, res, next) => {
+//     const removerid = req.iduse;
+//     // const t=await sequelize.transaction()
+//     const grid = req.body.gid;
+//     const client = req.body.uid;
+//     // console.log('345 line')
+//     const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
+//     if (isadm.isadmin) {
+//         try {
 
-            res.status(500).json({ message: 'somethingwent wrong' })
-        }
+//             await Admin.destroy({ where: { userId: client, groupId: grid } })
 
-    } else {
-        res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
-    }
-}
+//             // console.log('356 line')
+//             res.json({ message: 'removed from admin', success: true })
+
+
+//         } catch (err) {
+
+//             res.status(500).json({ message: 'somethingwent wrong' })
+//         }
+
+//     } else {
+//         res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
+//     }
+// }
 
 exports.makeUserAdmin = async (req, res, next) => {
     const removerid = req.iduse;
-
     const grid = req.body.gid;
-
     const client = req.body.uid;
+    if (req.body.removeuser) {
+        const t = await sequelize.transaction()
 
-    const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
-    if (isadm.isadmin) {
-        try {
+        const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
+        if (isadm.isadmin) {
+            try {
+                const adm = await Admin.findOne({ where: { groupId: grid, userId: client } })
 
-            const user = await User.findOne({ where: { id: client } })
+                const user = await User.findOne({ where: { id: client } })
+                // console.log('usering ',user)
+                if (adm) {
+                    // await user.removeAdmins({where:{groupId:grid},transaction:t})
+                    await adm.destroy({ where: { groupId: grid }, transaction: t })
+                }
+                // const gu=await user.getGroups({where:{id:grid}})
+                // console.log('group ',gu )
+                if (user) {
+                    await user.removeGroup(grid, { transaction: t })
 
+                    // console.log('321 line')
+                    await t.commit()
+                    // console.log('323 line')
+                    return res.json({ message: 'removed from admin and group ', success: true })
+                }
 
-            await user.createAdmin({ isadmin: true, userId: user.id, groupId: grid })
+            } catch (err) {
+                await t.rollback();
+                console.log(err)
+                return res.status(500).json({ message: 'something went wrong' })
+            }
 
-            res.json({ message: 'removed from group', success: true })
-        } catch (err) {
-            res.status(500).json({ message: 'somethingwent wrong' })
+        } else {
+            res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
         }
-
-    } else {
-        res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
     }
+    if (req.body.makead) {
+        const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
+        if (isadm.isadmin) {
+            try {
+
+                const user = await User.findOne({ where: { id: client } })
+
+
+                await user.createAdmin({ isadmin: true, userId: user.id, groupId: grid })
+
+                res.json({ message: 'removed from group', success: true })
+            } catch (err) {
+                res.status(500).json({ message: 'somethingwent wrong' })
+            }
+
+        } else {
+            res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
+        }
+    } else {
+        const isadm = await Admin.findOne({ where: { groupId: grid, userId: removerid } })
+        if (isadm.isadmin) {
+            try {
+
+                await Admin.destroy({ where: { userId: client, groupId: grid } })
+
+                // console.log('356 line')
+                res.json({ message: 'removed from admin', success: true })
+
+
+            } catch (err) {
+
+                res.status(500).json({ message: 'somethingwent wrong' })
+            }
+
+        } else {
+            res.status(404).json({ message: 'remover is not admin or user does not exist', success: false })
+        }
+    }
+
 }
 
 exports.getAllNotUser = async (req, res, next) => {
@@ -413,10 +519,10 @@ exports.getAllNotUser = async (req, res, next) => {
     try {
         const group = await Group.findByPk(gid)
 
-        const author=req.iduse;
-        const email=await User.findByPk(author);
-        if(email.email!=="sk1234@gmail.com"){
-            return res.status(404).json({message:'unauthorized access',success:false})
+        const author = req.iduse;
+        const email = await User.findByPk(author);
+        if (email.email !== "sk1234@gmail.com") {
+            return res.status(404).json({ message: 'unauthorized access', success: false })
         }
         if (group) {
             // const users=await User.findAll({
@@ -458,19 +564,19 @@ exports.getAllNotUser = async (req, res, next) => {
             //     }
             // }));
 
-            const usersNotInGroup=await User.findAll({
-                include:{
-                  model:Group,
-                  where:{id:gid },
-                  required:false, 
+            const usersNotInGroup = await User.findAll({
+                include: {
+                    model: Group,
+                    where: { id: gid },
+                    required: false,
                 },
-                where:{
-                  '$Groups.id$':null, 
+                where: {
+                    '$Groups.id$': null,
                 },
-              });
+            });
 
             //   console.log(usersNotInGroup)
-              res.json(usersNotInGroup);
+            res.json(usersNotInGroup);
         } else {
             res.status(404).json({ message: 'group does not exist' })
         }
@@ -479,21 +585,83 @@ exports.getAllNotUser = async (req, res, next) => {
     }
 }
 
-exports.directAdd=async (req,res,next)=>{
-    try{
-        const grid=req.params.gid;
-        const uid=req.body.id
+exports.directAdd = async (req, res, next) => {
+    try {
+        const grid = req.params.gid;
+        const uid = req.body.id
         // console.log(req.body)
-        const user=await User.findByPk(uid);
-        const group=await Group.findByPk(grid)
-    
-        const added=await user.addGroup(group)
-    
-        res.json({message:'user added',success:true})
-    }catch(err){
+        const user = await User.findByPk(uid);
+        const group = await Group.findByPk(grid)
+
+        const added = await user.addGroup(group)
+
+        res.json({ message: 'user added', success: true })
+    } catch (err) {
         console.log(err)
     }
 
-    
-    
+}
+
+exports.fileSharing = async (req, res, next) => {
+    try {
+        const grid = req.body.grid;
+        const userid = req.iduse;
+        const file = req.file;
+
+        const gu = await req.user.getGroups({ where: { id: grid } })
+        // console.log(gu)
+        if (gu != '') {
+            console.log(file)
+            let type;
+            if (file.mimetype.startsWith('image')) {
+                type = 'image'
+            } else if (file.mimetype.startsWith('video')) {
+                type = 'video'
+            } else {
+                type = 'other'
+            }
+            let originalname=file.originalname
+            const ext=originalname.slice(originalname.lastIndexOf('.')+1)
+            const fname=`DemoChat/${userid}/${grid}/${new Date()}.${ext}`
+            const fileUrl=await uploadingFile(file,fname)
+            console.log(fileUrl)
+            await req.user.createPersonalmsg({msg:fileUrl,type:type,groupId:grid})
+
+            res.status(200).json({message:'succesfully uploaded',success:true})
+
+        } else {
+            res.status(404).json({ message: 'unauthorized', success: false })
+        }
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+function uploadingFile(data, filename) {
+   
+
+    let s3bucket = new AWS.S3({
+        accessKeyId: process.env.access_key,
+        secretAccessKey: process.env.secret_key,
+
+
+    })
+    var params = {
+        Bucket: process.env.bucket_name,
+        Key: filename,
+        Body: data.buffer,
+        ACL: 'public-read'
+    }
+    return new Promise((res, rej) => s3bucket.upload(params, (err, s3response) => {
+        if (err) {
+            console.log('something went wrong', err)
+            rej(err)
+        } else {
+            console.log('success', s3response)
+            res(s3response.Location);
+
+        }
+    }))
+
 }
